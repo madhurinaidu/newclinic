@@ -1,3 +1,6 @@
+import { fonts } from '@grow/config';
+import { ThemeProvider } from '@grow/ui';
+import { Header, NextAuthProvider } from '../components';
 import './global.css';
 
 export const metadata = {
@@ -12,7 +15,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={`${fonts.inter.className}`}>
+        <ThemeProvider>
+          <NextAuthProvider>
+            <div className="min-h-screen">
+              <Header />
+              {children}
+            </div>
+          </NextAuthProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

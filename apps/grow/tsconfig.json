@@ -18,6 +18,7 @@
     ],
     "types": ["jest", "node"]
   },
+
   "include": [
     "**/*.ts",
     "**/*.tsx",
@@ -25,7 +26,9 @@
     "**/*.jsx",
     "../../apps/grow/.next/types/**/*.ts",
     "../../dist/apps/grow/.next/types/**/*.ts",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "tailwind.config.mjs"
   ],
   "exclude": ["node_modules", "jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
 }

@@ -1,0 +1,75 @@
+@import 'react-big-calendar/lib/css/react-big-calendar.css';
+
+/* Add these styles for the current time indicator */
+.rbc-current-time-indicator {
+  @apply bg-primary dark:bg-gray-300 h-[1px] !important;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  position: absolute;
+}
+
+.rbc-calendar,
+.rbc-time-view,
+.rbc-timeslot-group,
+.rbc-time-slot,
+.rbc-time-content,
+.rbc-events-container {
+  @apply dark:border-gray-600 border-gray-300;
+}
+
+.rbc-month-row + .rbc-month-row {
+  @apply dark:border-gray-600 border-gray-300;
+}
+.rbc-row .rbc-date-cell {
+  @apply border-r-0;
+}
+.rbc-date-cell {
+  @apply border-r last:border-r-0 dark:border-gray-600 border-gray-300;
+}
+
+.rbc-month-view {
+  @apply dark:border-gray-600 border-gray-300;
+}
+
+.rbc-header {
+  @apply dark:border-gray-600 border-gray-300;
+}
+.rbc-month-view .rbc-header {
+  @apply py-2;
+}
+.rbc-off-range {
+  @apply dark:border-gray-600 border-gray-300;
+}
+.rbc-today {
+  @apply dark:bg-primary-600;
+}
+.rbc-time-view .rbc-today {
+  @apply dark:bg-primary-800;
+}
+.rbc-time-gutter {
+  @apply bg-gray-100 dark:bg-gray-700;
+}
+.rbc-button-link:not(.rbc-header *) {
+  @apply text-primary hidden sm:block;
+}
+
+.rbc-row-segment {
+  @apply hidden sm:block;
+}
+
+.rbc-month-view .cal-event-wrapper {
+  font-size: 13px;
+  font-weight: 500;
+  @apply text-blue-600 border-transparent hover:bg-blue-100 active:bg-blue-200 rounded-md px-1;
+}
+
+.rbc-time-view .cal-event-wrapper {
+  @apply bg-blue-100 border-blue-500 border-2 text-primary rounded-md hover:bg-primary/90 hover:text-white transition-colors duration-200 px-3;
+}
+
+/* Optional: Add a dot/circle at the start of the line */
+.rbc-current-time-indicator::before {
+  content: '';
+  @apply absolute w-3 h-3 rounded-full bg-primary dark:bg-gray-300 -left-1 -top-[6px];
+}

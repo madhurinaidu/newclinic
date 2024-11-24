@@ -9,6 +9,7 @@ interface SessionUser {
 }
 
 export const getSessionUser = async (): Promise<SessionUser | undefined> => {
+  console.log('getSessionUser');
   const cookieStore = await cookies();
   const token = cookieStore.get('next-auth.session-token')?.value;
   if (!token) return undefined;
@@ -24,6 +25,7 @@ export const getSessionUser = async (): Promise<SessionUser | undefined> => {
     !('email' in decoded)
   )
     return undefined;
+  console.log('getSessionUser end');
   return {
     id: decoded.id as string,
     accessToken: decoded.accessToken as string,

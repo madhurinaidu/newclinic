@@ -7,4 +7,4 @@ type CalendarEvent = {
   desc?: string;
 };
 
-export { CalendarEvent };
+export type { CalendarEvent };

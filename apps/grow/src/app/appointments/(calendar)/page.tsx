@@ -15,11 +15,11 @@ export default async function Index() {
   );
   const data = await response.json();
   console.log(
-    'data',
-    data,
-    `${API.appointmentsFilter}?end=${new Date().toISOString()}&start=${new Date(
-      new Date().setDate(new Date().getDate() - 100)
-    ).toISOString()}`
+    'response',
+    `${API.appointmentsFilter}?start=${new Date().toISOString()}&end=${new Date(
+      new Date().setDate(new Date().getDate() + 100)
+    ).toISOString()}`,
+    user
   );
   return <CalendarContainer appointmentData={data} />;
 }

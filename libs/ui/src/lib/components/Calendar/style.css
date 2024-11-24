@@ -14,7 +14,13 @@
 .rbc-timeslot-group,
 .rbc-time-slot,
 .rbc-time-content,
-.rbc-events-container {
+.rbc-events-container,
+.rbc-agenda-table,
+.rbc-agenda-view .rbc-header,
+.rbc-agenda-view table.rbc-agenda-table tbody > tr > td + td,
+.rbc-agenda-view table.rbc-agenda-table thead > tr > th,
+.rbc-agenda-view table.rbc-agenda-table tbody > tr + tr,
+.rbc-agenda-view table.rbc-agenda-table {
   @apply dark:border-gray-600 border-gray-300;
 }
 
@@ -44,6 +50,10 @@
 .rbc-today {
   @apply dark:bg-primary-600;
 }
+.cal-view-day .rbc-today,
+.cal-view-week .rbc-today {
+  @apply bg-transparent !important;
+}
 .rbc-time-view .rbc-today {
   @apply dark:bg-primary-800;
 }
@@ -51,21 +61,37 @@
   @apply bg-gray-100 dark:bg-gray-700;
 }
 .rbc-button-link:not(.rbc-header *) {
-  @apply text-primary hidden sm:block;
+  @apply text-blue-600 hidden sm:block;
+}
+
+.rbc-show-more {
+  @apply bg-transparent text-blue-600;
 }
 
 .rbc-row-segment {
   @apply hidden sm:block;
 }
 
-.rbc-month-view .cal-event-wrapper {
+.rbc-month-view .rbc-event {
   font-size: 13px;
   font-weight: 500;
-  @apply text-blue-600 border-transparent hover:bg-blue-100 active:bg-blue-200 rounded-md px-1;
+  @apply text-blue-600  dark:text-blue-500 bg-transparent border-transparent hover:bg-blue-200 hover:dark:bg-primary-500 active:bg-blue-200 rounded-md px-1;
 }
 
-.rbc-time-view .cal-event-wrapper {
-  @apply bg-blue-100 border-blue-500 border-2 text-primary rounded-md hover:bg-primary/90 hover:text-white transition-colors duration-200 px-3;
+.rbc-time-view .rbc-event {
+  border-width: 1px;
+  font-size: 13px;
+  font-weight: 500;
+  @apply bg-blue-100 flex justify-center dark:bg-primary-600 dark:text-blue-400 border-blue-300 dark:border-blue-700 text-primary rounded-md hover:bg-blue-200 transition-colors duration-200 px-3 hover:dark:bg-primary-700 hover:dark:text-white;
+}
+.rbc-label {
+  font-size: 13px;
+  font-weight: 300;
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+.cal-view-week .rbc-allday-cell {
+  @apply hidden;
 }
 
 /* Optional: Add a dot/circle at the start of the line */

@@ -22,7 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, children }) => {
   return (
     <div className="flex flex-col md:flex-row w-full min-h-screen md:mt-6 sm:mt-2">
       {/* Sidebar Navigation */}
-      <nav className="md:w-64 md:min-h-screen">
+      <nav className="md:w-56 md:min-h-screen">
         {/* Mobile Tabs */}
         <div className="md:hidden flex overflow-x-auto dark:border-gray-700">
           {navItems.map((item, index) => (

@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight } from '@phosphor-icons/react';
+import { CaretLeft, CaretRight } from '@phosphor-icons/react';
 import { ToolbarProps, View } from 'react-big-calendar';
 import { cn } from '../../utils/cn';
 import { Button } from '../index';
@@ -11,15 +11,6 @@ const Toolbar: React.FC<ToolbarProps<CalendarEvent, object>> = (toolbar) => {
     <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-0 sm:justify-between mb-4 p-2">
       <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-start">
         <Button
-          onClick={() => toolbar.onNavigate('PREV')}
-          size="sm"
-          color="light"
-          rounded
-          leftIcon={<ArrowLeft />}
-        >
-          Previous
-        </Button>
-        <Button
           color="light"
           rounded
           size="sm"
@@ -28,17 +19,30 @@ const Toolbar: React.FC<ToolbarProps<CalendarEvent, object>> = (toolbar) => {
           Today
         </Button>
         <Button
+          onClick={() => toolbar.onNavigate('PREV')}
+          size="sm"
           color="light"
           rounded
+          // leftIcon={<ArrowLeft />}
+        >
+          <CaretLeft />
+        </Button>
+        <Button
+          color="light"
+          rounded
+          isIconButton
           size="sm"
           onClick={() => toolbar.onNavigate('NEXT')}
-          rightIcon={<ArrowRight />}
+          // rightIcon={<ArrowRight />}
         >
-          Next
+          <CaretRight />
         </Button>
       </div>
 
-      <span className="font-semibold order-first sm:order-none text-lg">
+      <span
+        className="order-first sm:order-none text-lg font-light text-gray-700 dark:text-gray-300"
+        style={{ fontSize: 19 }}
+      >
         {toolbar.label}
       </span>
 

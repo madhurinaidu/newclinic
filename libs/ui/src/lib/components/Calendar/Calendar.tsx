@@ -11,7 +11,6 @@ import React, {
 } from 'react';
 import {
   Calendar as BigCalendar,
-  Components,
   DateCellWrapperProps,
   DateLocalizer,
   momentLocalizer,
@@ -20,39 +19,37 @@ import {
   Views,
 } from 'react-big-calendar';
 
-import { Button, Popup } from '../index';
+import { Modal } from '../index';
 import DateCellWrapper from './DateCellWrapper';
 import DateHeader from './DateHeader';
 // import events from './events';
+import EventDetail from './EventDetail';
 import EventWrapper from './EventWrapper';
+import { Event } from './schema';
 import './style.css';
 import TimeGutterWrapper from './TimeGutterWrapper';
 import Toolbar from './Toolbar';
 import { CalendarEvent } from './types';
+import WeekHeader from './WeekHeader';
 
 const mLocalizer = momentLocalizer(moment);
 
-const components: Components<CalendarEvent> = {
-  eventWrapper: EventWrapper,
-  timeGutterWrapper: TimeGutterWrapper,
-  toolbar: Toolbar,
-  month: { dateHeader: DateHeader },
-  dateCellWrapper: DateCellWrapper as ComponentType<DateCellWrapperProps>,
-};
 export function Calendar({
   localizer = mLocalizer,
   showDemoLink = true,
   events = [],
+  callUrl = '',
   ...props
 }: {
   localizer?: DateLocalizer;
   showDemoLink?: boolean;
   events?: CalendarEvent[];
+  callUrl?: string;
 } & Record<string, any>) {
-  const [view, setView] = useState<View>(Views.MONTH);
+  const [view, setView] = useState<View>(Views.DAY);
   const ref = useRef<HTMLButtonElement>(null);
   const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
+  const [eventDetail, setEventDetail] = useState<CalendarEvent | null>(null);
   const [popUpData, setPopUpData] = useState<{
     clientX?: number;
     clientY?: number;
@@ -60,9 +57,8 @@ export function Calendar({
     visible?: boolean;
   }>({ clientX: 0, clientY: 0, ref: null, visible: false });
 
-  const { defaultDate, views } = useMemo(
+  const { views } = useMemo(
     () => ({
-      components: components,
       defaultDate: new Date(2015, 3, 1),
       views: Object.keys(Views).map((k) => Views[k as keyof typeof Views]),
     }),
@@ -96,37 +92,29 @@ export function Calendar({
 
   const handleSelectEvent = (event: CalendarEvent) => {
     console.log('Selected event:', event);
+    setEventDetail(event);
     // Add any additional handling here
   };
 
   return (
     <Fragment>
-      <Button
-        style={{ position: 'fixed', bottom: 0 }}
-        ref={ref}
-        onClick={() => setOpen(true)}
+      <Modal
+        isOpen={eventDetail ? true : false}
+        onClose={() => setEventDetail(null)}
       >
-        Open
-      </Button>
-      {/* <Modal isOpen={open} onClose={() => setOpen(false)}><div>Hello</div></Modal> */}
-      <Popup
-        targetElement={ref?.current}
-        isOpen={popUpData?.visible || false}
-        onClose={closePopup}
-      >
-        <h2 className="text-xl font-bold mb-4">Popup Title</h2>
-        <p>Your popup content goes here</p>
-        <button
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-          onClick={() => setOpen(false)}
-        >
-          Close
-        </button>
-      </Popup>
+        {eventDetail && (
+          <EventDetail
+            event={eventDetail as unknown as Event}
+            callUrl={callUrl}
+          />
+        )}
+      </Modal>
       <div className="height600" {...props}>
         <BigCalendar
           style={{ minHeight: 600 }}
+          className={`cal-view-${view}`}
           components={{
+            week: { header: WeekHeader },
             eventWrapper: (props) => (
               <EventWrapper
                 {...props}

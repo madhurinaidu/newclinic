@@ -7,6 +7,8 @@ import { Dropdown } from './DropDown/Dropdown';
 import { DropdownItem } from './DropDown/DropdownItem';
 import GrowLogo from './GrowLogo/GrowLogo';
 import { Input } from './Input/Input';
+import Jitsi from './Jitsi/Jitsi';
+import { Modal } from './Modal/Modal';
 import { Popup } from './PopUp/PopUp';
 import Sidebar from './Sidebar/Sidebar';
 import { ThemeProvider } from './Theme/ThemeProvider';
@@ -22,6 +24,8 @@ export {
   DropdownItem,
   GrowLogo,
   Input,
+  Jitsi,
+  Modal,
   Popup,
   Sidebar,
   ThemeProvider,

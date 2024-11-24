@@ -28,6 +28,13 @@ declare module 'next-auth' {
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: 'jwt',
+    maxAge: 60 * 60, // 60 seconds = 1 minute
+  },
+  jwt: {
+    maxAge: 60 * 60,
+  },
   providers: [
     CredentialsProvider({
       name: 'Credentials',

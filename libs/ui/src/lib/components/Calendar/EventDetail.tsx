@@ -7,6 +7,7 @@ import {
   Users,
 } from '@phosphor-icons/react';
 import dayjs from 'dayjs';
+import { getTimeFormat } from '../../utils/common';
 import Button from '../Button/Button';
 import { Event } from './schema';
 
@@ -28,8 +29,8 @@ export default function EventDetail({
       <div className="text-gray-500 dark:text-gray-300 mb-4 font-light text-sm">
         <p>
           {dayjs(event.StartTime).format('dddd, MMMM D')} •{' '}
-          {dayjs(event.StartTime).format('hh:mm a')} –{' '}
-          {dayjs(event.EndTime).format('hh:mm a')}
+          {getTimeFormat(event.StartTime)}
+          {getTimeFormat(event.EndTime)}
         </p>
         {/* <p>{event.recurrence}</p> */}
       </div>

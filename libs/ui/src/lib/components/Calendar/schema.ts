@@ -26,4 +26,4 @@ interface Event {
   updatedAt: string;
   hasJoined: boolean;
 }
-export { Event, Participant, Participants };
+export type { Event, Participant, Participants };

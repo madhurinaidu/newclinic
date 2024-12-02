@@ -102,7 +102,7 @@ export default function AppointmentItem({
                   leftIcon={<VideoCamera weight="fill" />}
                   onClick={() => {
                     router.push(
-                      `/call/${appointment.MeetingID}/${Participants?.Doctor?.name}`
+                      `/call/${appointment.MeetingRoomID}/${Participants?.Doctor?.name}`
                     );
                   }}
                   color="warning"

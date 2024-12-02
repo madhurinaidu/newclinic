@@ -6,6 +6,6 @@ export const config = {
      * Match only for dashboard routes:
      * 1. /dashboard/*
      */
-    '/dashboard/:path*',
+    // '/dashboard/:path*',
   ],
 };

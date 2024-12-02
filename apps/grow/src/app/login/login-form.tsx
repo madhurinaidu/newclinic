@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Input } from '@grow/ui';
+import { Button, Input } from '@libs/ui';
 import { Eye, Lock, User } from '@phosphor-icons/react/dist/ssr';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';

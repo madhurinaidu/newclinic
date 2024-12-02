@@ -1,20 +1,23 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useRef, useState } from 'react';
 
 interface DropdownProps {
   trigger: React.ReactNode;
   children: React.ReactNode;
   openOnHover?: boolean;
+  minWidth?: string | number;
 }
 
 export const Dropdown = ({
   trigger,
   children,
   openOnHover = false,
+  minWidth = '100%',
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dropDownContent = useRef<HTMLDivElement | null>(null);
   // Add states for dropdown position
   const [verticalPosition, setVerticalPosition] = useState<'bottom' | 'top'>(
     'bottom'
@@ -27,36 +30,37 @@ export const Dropdown = ({
 
   // Enhanced position check function
   const checkPosition = (event: React.MouseEvent<HTMLDivElement>) => {
-    const triggerElement = event.currentTarget;
-    const triggerRect = triggerElement.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    const viewportWidth = window.innerWidth;
+    // const triggerElement: any = dropDownContent?.current;
+    // // if (!triggerElement) return;
+    // const triggerRect = triggerElement?.getBoundingClientRect();
+    // const viewportHeight = window.innerHeight;
+    // const viewportWidth = window.innerWidth;
 
-    // Store trigger width
-    setTriggerWidth(triggerRect.width);
+    // // Store trigger width
+    // setTriggerWidth(triggerRect.width);
 
-    // Check vertical space
-    const spaceBelow = viewportHeight - triggerRect.bottom;
-    const spaceAbove = triggerRect.top;
+    // // Check vertical space
+    // const spaceBelow = viewportHeight - triggerRect.bottom;
+    // const spaceAbove = triggerRect.top;
 
-    // Check horizontal space
-    const spaceRight = viewportWidth - triggerRect.right;
-    const spaceLeft = triggerRect.left;
+    // // Check horizontal space
+    // const spaceRight = viewportWidth - triggerRect.right;
+    // const spaceLeft = triggerRect.left;
 
-    // Set vertical position
-    if (spaceBelow < 320 && spaceAbove > spaceBelow) {
-      setVerticalPosition('top');
-    } else {
-      setVerticalPosition('bottom');
-    }
+    // // Set vertical position
+    // if (spaceBelow < 320 && spaceAbove > spaceBelow) {
+    //   setVerticalPosition('top');
+    // } else {
+    //   setVerticalPosition('bottom');
+    // }
 
-    // Set horizontal position
-    if (spaceRight < 224) {
-      // 224px = 14rem (w-56)
-      setHorizontalPosition('left');
-    } else {
-      setHorizontalPosition('right');
-    }
+    // // Set horizontal position
+    // if (spaceRight < 224) {
+    //   // 224px = 14rem (w-56)
+    //   setHorizontalPosition('left');
+    // } else {
+    //   setHorizontalPosition('right');
+    // }
 
     setIsOpen(!isOpen);
   };
@@ -101,6 +105,7 @@ export const Dropdown = ({
 
             {/* Dropdown Menu */}
             <motion.div
+              ref={dropDownContent}
               initial={{
                 opacity: 0,
                 y: verticalPosition === 'bottom' ? -5 : 5,
@@ -117,6 +122,7 @@ export const Dropdown = ({
                 x: horizontalPosition === 'right' ? -5 : 5,
               }}
               transition={{ duration: 0.2 }}
+              style={{ minWidth }}
               className={`absolute z-40 min-w-full rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none
                 ${
                   verticalPosition === 'bottom'

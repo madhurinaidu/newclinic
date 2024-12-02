@@ -1,6 +1,6 @@
 'use client';
 
-import { Calendar } from '@grow/ui';
+import { Calendar } from '@libs/ui';
 
 export default function CalendarContainer({
   appointmentData = [],

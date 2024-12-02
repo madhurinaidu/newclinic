@@ -1,6 +1,6 @@
-import { fonts } from '@grow/config';
-import { ThemeProvider } from '@grow/ui';
-import { Header, NextAuthProvider } from '../components';
+import { Header, NextAuthProvider } from '@app/components';
+import { fonts } from '@libs/config';
+import { ThemeProvider } from '@libs/ui';
 import './global.css';
 
 export const metadata = {

@@ -25,7 +25,7 @@ module.exports = {
       // },
       colors: {
         primary: {
-          DEFAULT: '#0049ff', // You can adjust this color
+          DEFAULT: '#0e82fd', // You can adjust this color
           foreground: '#FFFFFF',
           darkforeground: '#0049ff',
           50: '#e9e9ef',

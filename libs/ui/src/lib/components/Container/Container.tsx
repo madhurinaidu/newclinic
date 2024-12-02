@@ -5,14 +5,21 @@ interface ContainerProps {
   className?: string;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
   padding?: boolean;
+  isPatient?: boolean;
 }
 
 export function Container({
   children,
   className = '',
-  maxWidth = '3xl',
+  maxWidth,
   padding = true,
+  isPatient = false,
 }: ContainerProps) {
+  if (isPatient) {
+    maxWidth = 'xl';
+  } else {
+    maxWidth = maxWidth || '3xl';
+  }
   const maxWidthClasses = {
     sm: 'max-w-screen-sm',
     md: 'max-w-screen-md',

@@ -1,5 +1,5 @@
-import { API } from './../../../config';
-import { getSessionUser } from './../../../utils/cookies';
+import { API } from '@app/config';
+import { getSessionUser } from '@app/utils/cookies';
 import CalendarContainer from './CalendarContainer';
 
 export default async function Index() {

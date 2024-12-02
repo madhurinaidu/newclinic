@@ -15,8 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@grow/config": ["libs/config/src/index.ts"],
-      "@grow/ui": ["libs/ui/src/index.ts"]
+      "@libs/config": ["libs/config/src/index.ts"],
+      "@libs/ui": ["libs/ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

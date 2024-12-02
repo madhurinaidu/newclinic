@@ -11,9 +11,16 @@ interface ModalProps {
   onClose: () => void;
   children: React.ReactNode;
   title?: string;
+  maxWidth?: string;
 }
 
-export const Modal = ({ isOpen, onClose, children, title }: ModalProps) => {
+export const Modal = ({
+  isOpen,
+  onClose,
+  children,
+  title,
+  maxWidth,
+}: ModalProps) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -47,7 +54,12 @@ export const Modal = ({ isOpen, onClose, children, title }: ModalProps) => {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-50 flex items-center justify-center"
           >
-            <div className="relative w-full h-full bg-white dark:bg-gray-800 sm:h-auto sm:max-h-[90vh] sm:max-w-lg sm:rounded-lg sm:m-6 modal-shadow">
+            <div
+              className={cn(
+                'relative w-full h-full bg-white dark:bg-gray-800 sm:h-auto sm:max-h-[90vh] sm:max-w-lg sm:rounded-lg sm:m-6 modal-shadow',
+                maxWidth ? maxWidth : ''
+              )}
+            >
               {/* Header */}
 
               {title ? (

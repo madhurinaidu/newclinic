@@ -1,5 +1,5 @@
 'use client';
-import { AppHeader, GrowLogo } from '@grow/ui';
+import { AppHeader, GrowLogo } from '@libs/ui';
 import { User } from '@phosphor-icons/react';
 import { useSession } from 'next-auth/react';
 

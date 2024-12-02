@@ -1,6 +1,6 @@
+import { API } from '@app/config';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { API } from '../../../../config';
 
 declare module 'next-auth' {
   interface Session {

@@ -1,6 +1,6 @@
 'use client';
 
-import { Container, Jitsi } from '@grow/ui';
+import { Container, Jitsi } from '@libs/ui';
 import { useRouter } from 'next/navigation';
 
 export default function Call({ params }: { params: { slug: string[] } }) {

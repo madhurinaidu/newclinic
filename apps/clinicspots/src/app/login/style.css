@@ -1,0 +1,75 @@
+.thumb-wraper {
+  display: inline-block;
+  position: relative;
+}
+.thumb-wraper .bg-img {
+  position: relative;
+  /* z-index: -2; */
+  border-style: none;
+  height: auto;
+  max-width: 100%;
+  vertical-align: middle;
+  animation: rotate 20s linear infinite;
+  @apply bg-primary rounded-full dark:bg-transparent opacity-70 dark:opacity-20;
+}
+.thumb-wraper ul {
+  margin-bottom: 24px;
+}
+.thumb-wraper ul li {
+  position: absolute;
+}
+.thumb-wraper ul li:first-child {
+  left: 20px;
+  top: 100px;
+}
+.thumb-wraper ul li:nth-child(2) {
+  left: 50%;
+  top: 0;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+.thumb-wraper ul li:nth-child(3) {
+  right: 20px;
+  top: 100px;
+}
+.thumb-wraper ul li:nth-child(4) {
+  bottom: 110px;
+  right: 30px;
+}
+.thumb-wraper ul li:nth-child(5) {
+  bottom: 20px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+.thumb-wraper ul li:nth-child(6) {
+  bottom: 110px;
+  left: 30px;
+}
+.thumb-wraper ul li a {
+  border-radius: 50%;
+  box-shadow: 0 10px 60px 0 rgba(31, 34, 120, 0.1);
+  display: block;
+  height: 65px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.5s;
+  width: 65px;
+}
+.thumb-wraper ul li a img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+  border-style: none;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "clinicspots-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/clinicspots-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["clinicspots"],
+  "// targets": "to see all targets run: nx show project clinicspots-e2e --web",
+  "targets": {}
+}

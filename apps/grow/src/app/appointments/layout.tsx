@@ -1,4 +1,4 @@
-import { Container, Sidebar } from '@grow/ui';
+import { Container, Sidebar } from '@libs/ui';
 import { Calendar as CalendarIcon, List } from '@phosphor-icons/react/dist/ssr';
 import React from 'react';
 

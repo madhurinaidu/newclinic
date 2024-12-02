@@ -1,4 +1,4 @@
-import { GrowLogo } from '@grow/ui';
+import { GrowLogo } from '@libs/ui';
 import {
   AppleLogo,
   FacebookLogo,

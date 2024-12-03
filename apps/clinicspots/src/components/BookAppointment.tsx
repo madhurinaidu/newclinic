@@ -277,7 +277,9 @@ export default function BookAppointment() {
           <DateTabs
             tabs={weekSlots}
             daySlots={daySlots}
-            onSlotSelect={bookSlot}
+            onSlotSelect={(startTime, endTime) => {
+              bookSlot(startTime, endTime);
+            }}
           />
         </div>
       </Modal>

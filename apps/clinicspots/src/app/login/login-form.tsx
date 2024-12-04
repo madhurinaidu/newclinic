@@ -9,7 +9,6 @@ import { useState } from 'react';
 
 export default function LoginForm() {
   const router = useRouter();
-  // const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState({ phoneNumber: '', password: '', general: '' });

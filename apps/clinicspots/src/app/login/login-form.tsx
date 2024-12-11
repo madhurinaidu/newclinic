@@ -1,9 +1,11 @@
-'use client'; 
+'use client';
+
 import { Button, Input } from '@libs/ui';
 import { Phone, Lock } from '@phosphor-icons/react/dist/ssr';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -16,7 +18,7 @@ export default function LoginForm() {
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-
+  
     if (/^\d*$/.test(value)) { // Check for numeric input only
       if (value.length > 10) {
         setError((prev) => ({
@@ -41,7 +43,8 @@ export default function LoginForm() {
       }));
     }
   };
-
+  
+ 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError({ phoneNumber: '', password: '', general: '' });
@@ -63,27 +66,17 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      // 1. Make API call to the provided backend endpoint
-      const response = await fetch(' https://vcall.aairavx.com/api/', { // Adjust the URL based on the provided backend endpoint
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phoneNumber, // or "email" if phoneNumber is treated as email in backend
-          password,
-        }),
+      const response = await signIn('credentials', {
+        email:phoneNumber,
+        password,
+        redirect: false,
       });
 
-      const data = await response.json();
-
-      if (!response.ok || data.error) {
-        // Handle failed login attempt
-        setError((prev) => ({ ...prev, general: data.error || 'Invalid credentials' }));
+      if (response?.error) {
+        setError((prev) => ({ ...prev, general: 'Invalid credentials' }));
         return;
       }
 
-      // 2. On successful login, redirect to the search page
       router.push('/search');
     } catch (error) {
       setError((prev) => ({ ...prev, general: 'An error occurred during login' }));
@@ -91,7 +84,6 @@ export default function LoginForm() {
       setIsLoading(false);
     }
   };
-
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
       <div className="space-y-5">
@@ -174,7 +166,7 @@ export default function LoginForm() {
       </div>
 
       <div>
-        <Button fullWidth type="submit" variant="filled" size="lg" disabled={isLoading}>
+      <Button fullWidth type="submit" variant="filled" size="lg" disabled={isLoading}>
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
       </div>
@@ -193,4 +185,4 @@ export default function LoginForm() {
       </p>
     </form>
   );
-}
+} 

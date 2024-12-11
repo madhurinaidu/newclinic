@@ -65,7 +65,7 @@ export default function LoginForm() {
 
     try {
       // Send data to the backend API (using `fetch` instead of NextAuth.js)
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

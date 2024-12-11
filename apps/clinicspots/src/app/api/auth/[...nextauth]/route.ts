@@ -1,4 +1,3 @@
-import { API } from '@app/config';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
@@ -30,7 +29,7 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60, // 60 seconds = 1 minute
+    maxAge: 60 * 60, // 1 hour
   },
   cookies: {
     sessionToken: {
@@ -61,7 +60,7 @@ const handler = NextAuth({
     },
   },
   jwt: {
-    maxAge: 60 * 60,
+    maxAge: 60 * 60, // 1 hour
   },
   providers: [
     CredentialsProvider({
@@ -72,21 +71,17 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         try {
-          // Make API call to your authentication endpoint
-          const response = await fetch(`${API.login}`, {
+          // Call your authentication API
+          const response = await fetch('https://vcall.aairavx.com/api/auth/login', { // Use your API URL here
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization:
-                'Basic ' +
-                Buffer.from(
-                  credentials?.email + ':' + credentials?.password
-                ).toString('base64'),
+              Authorization: 'Basic ' + Buffer.from(`${credentials?.email}:${credentials?.password}`).toString('base64'),
             },
-            // body: JSON.stringify({
-            //   username: credentials?.email,
-            //   password: credentials?.password,
-            // }),
+            body: JSON.stringify({
+              email: credentials?.email,
+              password: credentials?.password,
+            }), // Send the credentials in the body as expected by your API
           });
 
           const user = await response.json();
@@ -100,16 +95,16 @@ const handler = NextAuth({
               accessToken: data?.access_token,
             };
           }
-          return null;
+          return null; // Return null if authentication fails
         } catch (error) {
-          console.log(error);
-          return null;
+          console.log('Error during authentication:', error);
+          return null; // Return null if the API call fails
         }
       },
     }),
   ],
   pages: {
-    signIn: '/login',
+    signIn: '/login', // Custom sign-in page
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -117,20 +112,14 @@ const handler = NextAuth({
         token.id = user.id;
         token.accessToken = user.accessToken;
       }
-      return token;
+      return token; // Return token containing user info
     },
-    async session({
-      session,
-      token,
-    }: {
-      session: any;
-      token: any & { id: string; accessToken?: string };
-    }) {
+    async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id;
         session.user.accessToken = token.accessToken;
       }
-      return session;
+      return session; // Return session with user info
     },
   },
 });

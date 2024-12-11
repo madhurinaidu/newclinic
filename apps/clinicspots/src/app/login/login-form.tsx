@@ -70,8 +70,9 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
+      // Call NextAuth signIn function with correct fields (phoneNumber as email)
       const response = await signIn('credentials', {
-        email: phoneNumber,
+        email: phoneNumber, // Send phoneNumber as email
         password,
         redirect: false,
       });
@@ -81,6 +82,7 @@ export default function LoginForm() {
         return;
       }
 
+      // Redirect to a protected page (e.g., /search)
       router.push('/search');
     } catch (error) {
       setError((prev) => ({
@@ -91,6 +93,7 @@ export default function LoginForm() {
       setIsLoading(false);
     }
   };
+
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
       <div className="space-y-5">
@@ -140,7 +143,7 @@ export default function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               className=" dark:bg-gray-800 "
               fullWidth
-              placeholder="Enter your password"
+              placeholder="Enter your OTP"
             />
           </div>
           {error.password && (
@@ -166,36 +169,4 @@ export default function LoginForm() {
         </div>
         <Link
           href="/forgot-password"
-          className="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400"
-        >
-          Forgot password?
-        </Link>
-      </div>
-
-      <div>
-        <Button
-          fullWidth
-          type="submit"
-          variant="filled"
-          size="lg"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Signing in...' : 'Sign in'}
-        </Button>
-      </div>
-      {error.general && (
-        <p className="mt-3 text-center text-sm text-red-600">{error.general}</p>
-      )}
-
-      <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-        Don&apos;t have an account?{' '}
-        <Link
-          href="/register"
-          className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400"
-        >
-          Sign up
-        </Link>
-      </p>
-    </form>
-  );
-}
+          className="

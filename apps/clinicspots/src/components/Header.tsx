@@ -21,25 +21,7 @@ export default function Header() {
   const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
-  const [apiData, setApiData] = useState(null); // State to store API data
 
-  // Fetch data from API on component mount
-  useEffect(() => {
-    const fetchApiData = async () => {
-      try {
-        const response = await fetch('https://vcall.aairavx.com/api/'); // Replace with your actual API endpoint
-        const data = await response.json();
-        setApiData(data); // Save the fetched data in state
-        console.log(data); // You can inspect the API response here
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchApiData();
-  }, []); // Empty array ensures this effect only runs once when the component mounts
-
-  // Handle scroll event to toggle header background
   useEffect(() => {
     const handleScroll = () => {
       setIsAtTop(window.scrollY === 0);
@@ -54,6 +36,8 @@ export default function Header() {
   const navigation = [
     { name: 'Find Doctors', href: '/search' },
     { name: 'Video Consultation', href: '/video-consult' },
+    // { name: 'About', href: '/about' },
+    // { name: 'Contact', href: '/contact' },
   ];
 
   return (
@@ -142,7 +126,11 @@ export default function Header() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
+                  d={
+                    isMenuOpen
+                      ? 'M6 18L18 6M6 6l12 12'
+                      : 'M4 6h16M4 12h16M4 18h16'
+                  }
                 />
               </svg>
             </button>

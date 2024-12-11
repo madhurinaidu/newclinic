@@ -2,6 +2,7 @@
 
 import { Button, Input } from '@libs/ui';
 import { Phone, Lock } from '@phosphor-icons/react/dist/ssr';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -10,7 +11,11 @@ export default function LoginForm() {
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState({ phoneNumber: '', password: '', general: '' });
+  const [error, setError] = useState({
+    phoneNumber: '',
+    password: '',
+    general: '',
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   const validatePhoneNumber = (number: string) => /^\d{10}$/.test(number);
@@ -18,7 +23,8 @@ export default function LoginForm() {
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
-    if (/^\d*$/.test(value)) { // Check for numeric input only
+    if (/^\d*$/.test(value)) {
+      // Check for numeric input only
       if (value.length > 10) {
         setError((prev) => ({
           ...prev,
@@ -64,33 +70,27 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      // Send data to the backend API (using `fetch` instead of NextAuth.js)
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phoneNumber, // Send the phone number
-          password,    // Send the OTP or password
-        }),
+      const response = await signIn('credentials', {
+        email: phoneNumber,
+        password,
+        redirect: false,
       });
 
-      if (!response.ok) {
-        const data = await response.json();
-        setError((prev) => ({ ...prev, general: data.message || 'Invalid credentials' }));
+      if (response?.error) {
+        setError((prev) => ({ ...prev, general: 'Invalid credentials' }));
         return;
       }
 
-      // If successful, redirect to the next page
       router.push('/search');
     } catch (error) {
-      setError((prev) => ({ ...prev, general: 'An error occurred during login' }));
+      setError((prev) => ({
+        ...prev,
+        general: 'An error occurred during login',
+      }));
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
       <div className="space-y-5">
@@ -140,7 +140,7 @@ export default function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               className=" dark:bg-gray-800 "
               fullWidth
-              placeholder="Enter your OTP"
+              placeholder="Enter your password"
             />
           </div>
           {error.password && (
@@ -173,7 +173,13 @@ export default function LoginForm() {
       </div>
 
       <div>
-        <Button fullWidth type="submit" variant="filled" size="lg" disabled={isLoading}>
+        <Button
+          fullWidth
+          type="submit"
+          variant="filled"
+          size="lg"
+          disabled={isLoading}
+        >
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
       </div>

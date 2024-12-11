@@ -1,3 +1,4 @@
+'use client'; 
 import { Button, Input } from '@libs/ui';
 import { Phone, Lock } from '@phosphor-icons/react/dist/ssr';
 import { useState } from 'react';

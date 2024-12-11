@@ -12,6 +12,8 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { signOut } from 'next-auth/react'; // Import signOut from next-auth
+
 
 export default function Header() {
   const pathname = usePathname();
@@ -19,7 +21,25 @@ export default function Header() {
   const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
+  const [apiData, setApiData] = useState(null); // State to store API data
 
+  // Fetch data from API on component mount
+  useEffect(() => {
+    const fetchApiData = async () => {
+      try {
+        const response = await fetch('https://vcall.aairavx.com/api/'); // Replace with your actual API endpoint
+        const data = await response.json();
+        setApiData(data); // Save the fetched data in state
+        console.log(data); // You can inspect the API response here
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchApiData();
+  }, []); // Empty array ensures this effect only runs once when the component mounts
+
+  // Handle scroll event to toggle header background
   useEffect(() => {
     const handleScroll = () => {
       setIsAtTop(window.scrollY === 0);
@@ -33,16 +53,13 @@ export default function Header() {
 
   const navigation = [
     { name: 'Find Doctors', href: '/search' },
-    { name: 'Video Consult', href: '/video-consult' },
-    // { name: 'About', href: '/about' },
-    // { name: 'Contact', href: '/contact' },
+    { name: 'Video Consultation', href: '/video-consult' },
   ];
 
   return (
     <header
-      className={`fixed top-0 w-full  ${
-        isAtTop ? 'bg-transparent' : 'shadow-md bg-white dark:bg-gray-800'
-      } z-50`}
+      className={`fixed top-0 w-full  ${isAtTop ? 'bg-transparent' : 'shadow-md bg-white dark:bg-gray-800'
+        } z-50`}
     >
       <Container isPatient>
         <div className="flex justify-between items-center h-16">
@@ -64,11 +81,10 @@ export default function Header() {
                 key={item.name}
                 href={item.href}
                 style={{ fontSize: 16 }}
-                className={`relative after:content-[''] after:absolute after:bottom-0  after:h-[4px]  after:w-0 hover:after:w-12 after:rounded-t-lg after:transition-all  px-4 py-2 h-full flex items-center justify-center text-center font-medium transition-colors after:bg-blue-500  ${
-                  pathname === item.href
+                className={`relative after:content-[''] after:absolute after:bottom-0  after:h-[4px]  after:w-0 hover:after:w-12 after:rounded-t-lg after:transition-all  px-4 py-2 h-full flex items-center justify-center text-center font-medium transition-colors after:bg-blue-500  ${pathname === item.href
                     ? 'after:bg-blue-500 after:w-12'
                     : ' text-gray-500 dark:text-gray-300 hover:text-gray-700'
-                }`}
+                  }`}
               >
                 {item.name}
               </Link>
@@ -94,14 +110,20 @@ export default function Header() {
                 }
               >
                 <DropdownItem label="Profile" leftIcon={<User />} />
-                <DropdownItem
+                {/* <DropdownItem
                   label="My Appointments"
                   onClick={() => router.push('/dashboard/appointments')}
                   leftIcon={<BookBookmark />}
-                />
+                /> */}
                 <DropdownItem label="Settings" leftIcon={<Gear />} />
-              </Dropdown>
-            )}
+                <DropdownItem
+                  label="Logout"
+                  leftIcon={<User />} // You can replace with a logout icon
+                  onClick={() => {
+                    signOut({ callbackUrl: '/login' }); // Clear session and navigate to login page
+                  }}
+                />
+              </Dropdown>)}
           </div>
 
           {/* Mobile menu button */}
@@ -120,11 +142,7 @@ export default function Header() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d={
-                    isMenuOpen
-                      ? 'M6 18L18 6M6 6l12 12'
-                      : 'M4 6h16M4 12h16M4 18h16'
-                  }
+                  d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
                 />
               </svg>
             </button>
@@ -139,11 +157,10 @@ export default function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`block px-3 py-2 rounded-md text-base font-medium ${
-                    pathname === item.href
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${pathname === item.href
                       ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
                       : 'text-gray-500 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
+                    }`}
                 >
                   {item.name}
                 </Link>

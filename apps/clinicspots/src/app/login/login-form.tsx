@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Input } from '@libs/ui';
-import { Phone, Lock } from '@phosphor-icons/react/dist/ssr';
+import { Phone, Lock } from '@phosphor-icons/react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -18,6 +18,7 @@ export default function LoginForm() {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  // Validate phone number (ensure it's a 10-digit number)
   const validatePhoneNumber = (number: string) => /^\d{10}$/.test(number);
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,19 +71,24 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
+      // Call next-auth signIn API with credentials
       const response = await signIn('credentials', {
-        email: phoneNumber, // Send phone number as email
+        email: phoneNumber,  // Pass the phone number as email
         password,
         redirect: false,
       });
+
+      console.log("API Response:", response); // Log full response for debugging
 
       if (response?.error) {
         setError((prev) => ({ ...prev, general: 'Invalid credentials' }));
         return;
       }
 
-      router.push('/search'); // Redirect to search page on successful login
+      // Redirect on successful login
+      router.push('/search');
     } catch (error) {
+      console.error("Error during login:", error); // Catch error and log it
       setError((prev) => ({
         ...prev,
         general: 'An error occurred during login',
@@ -95,6 +101,7 @@ export default function LoginForm() {
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
       <div className="space-y-5">
+        {/* Phone Number Input */}
         <div>
           <label
             htmlFor="phoneNumber"
@@ -106,11 +113,11 @@ export default function LoginForm() {
             <Input
               id="phoneNumber"
               name="phoneNumber"
-              type="text"
+              type="tel"
               required
               value={phoneNumber}
               leftIcon={<Phone size={20} />}
-              size={'lg'}
+              size="lg"
               fullWidth
               onChange={handlePhoneNumberChange}
               className="dark:bg-gray-800"
@@ -122,6 +129,7 @@ export default function LoginForm() {
           )}
         </div>
 
+        {/* Password (OTP) Input */}
         <div>
           <label
             htmlFor="password"
@@ -132,7 +140,7 @@ export default function LoginForm() {
           <div className="mt-2 relative">
             <Input
               id="password"
-              size={'lg'}
+              size="lg"
               name="password"
               leftIcon={<Lock size={20} />}
               type="password"
@@ -150,6 +158,7 @@ export default function LoginForm() {
         </div>
       </div>
 
+      {/* Remember me and Forgot password */}
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <input
@@ -173,6 +182,7 @@ export default function LoginForm() {
         </Link>
       </div>
 
+      {/* Submit Button */}
       <div>
         <Button
           fullWidth
@@ -184,10 +194,13 @@ export default function LoginForm() {
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
       </div>
+
+      {/* General error message */}
       {error.general && (
         <p className="mt-3 text-center text-sm text-red-600">{error.general}</p>
       )}
 
+      {/* Sign up link */}
       <p className="text-center text-sm text-gray-600 dark:text-gray-400">
         Don&apos;t have an account?{' '}
         <Link

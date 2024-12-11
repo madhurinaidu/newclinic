@@ -1,11 +1,8 @@
-'use client';
-
 import { Button, Input } from '@libs/ui';
 import { Phone, Lock } from '@phosphor-icons/react/dist/ssr';
-import { signIn } from 'next-auth/react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -14,36 +11,78 @@ export default function LoginForm() {
   const [error, setError] = useState({ phoneNumber: '', password: '', general: '' });
   const [isLoading, setIsLoading] = useState(false);
 
- 
+  const validatePhoneNumber = (number: string) => /^\d{10}$/.test(number);
+
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    if (/^\d*$/.test(value)) { // Check for numeric input only
+      if (value.length > 10) {
+        setError((prev) => ({
+          ...prev,
+          phoneNumber: 'Phone number cannot exceed 10 digits',
+        }));
+      } else {
+        setPhoneNumber(value);
+        if (value.length === 10) {
+          setError((prev) => ({ ...prev, phoneNumber: '' }));
+        } else {
+          setError((prev) => ({
+            ...prev,
+            phoneNumber: 'Phone number must be exactly 10 digits',
+          }));
+        }
+      }
+    } else {
+      setError((prev) => ({
+        ...prev,
+        phoneNumber: 'Only numeric values are allowed',
+      }));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError({ phoneNumber: '', password: '', general: '' });
-    setIsLoading(true);
 
-    // Input validation
-    if (!phoneNumber) {
-      setError((prev) => ({ ...prev, phoneNumber: 'Phone number is required' }));
-      setIsLoading(false);
+    // Validate inputs
+    if (!validatePhoneNumber(phoneNumber)) {
+      setError((prev) => ({
+        ...prev,
+        phoneNumber: 'Phone number must be exactly 10 digits',
+      }));
       return;
     }
+
     if (!password) {
       setError((prev) => ({ ...prev, password: 'Password is required' }));
-      setIsLoading(false);
       return;
     }
 
+    setIsLoading(true);
+
     try {
-      const response = await signIn('credentials', {
-        email:phoneNumber,
-        password,
-        redirect: false,
+      // 1. Make API call to the provided backend endpoint
+      const response = await fetch(' https://vcall.aairavx.com/api/', { // Adjust the URL based on the provided backend endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phoneNumber, // or "email" if phoneNumber is treated as email in backend
+          password,
+        }),
       });
 
-      if (response?.error) {
-        setError((prev) => ({ ...prev, general: 'Invalid credentials' }));
+      const data = await response.json();
+
+      if (!response.ok || data.error) {
+        // Handle failed login attempt
+        setError((prev) => ({ ...prev, general: data.error || 'Invalid credentials' }));
         return;
       }
 
+      // 2. On successful login, redirect to the search page
       router.push('/search');
     } catch (error) {
       setError((prev) => ({ ...prev, general: 'An error occurred during login' }));
@@ -51,6 +90,7 @@ export default function LoginForm() {
       setIsLoading(false);
     }
   };
+
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
       <div className="space-y-5">
@@ -71,7 +111,7 @@ export default function LoginForm() {
               leftIcon={<Phone size={20} />}
               size={'lg'}
               fullWidth
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              onChange={handlePhoneNumberChange}
               className=" dark:bg-gray-800 "
               placeholder="Enter your Phone Number"
             />
@@ -86,7 +126,7 @@ export default function LoginForm() {
             htmlFor="password"
             className="block text-sm font-medium text-gray-700 dark:text-gray-300"
           >
-            Password
+            OTP
           </label>
           <div className="mt-2 relative">
             <Input
@@ -133,7 +173,7 @@ export default function LoginForm() {
       </div>
 
       <div>
-      <Button fullWidth type="submit" variant="filled" size="lg" disabled={isLoading}>
+        <Button fullWidth type="submit" variant="filled" size="lg" disabled={isLoading}>
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
       </div>

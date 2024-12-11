@@ -1,126 +1,70 @@
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-
-declare module 'next-auth' {
-  interface Session {
-    user: {
-      id: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-      accessToken?: string;
-    };
-  }
-
-  interface User {
-    id: string;
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-    accessToken?: string;
-  }
-
-  interface JWT {
-    accessToken?: string;
-  }
-}
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: 'jwt',
-    maxAge: 60 * 60, // 1 hour
-  },
-  cookies: {
-    sessionToken: {
-      name: `clinicspots.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: true,
-      },
-    },
-    callbackUrl: {
-      name: `clinicspots.callback-url`,
-      options: {
-        sameSite: 'lax',
-        path: '/',
-        secure: true,
-      },
-    },
-    csrfToken: {
-      name: `clinicspots.csrf-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: true,
-      },
-    },
-  },
-  jwt: {
-    maxAge: 60 * 60, // 1 hour
+    strategy: "jwt",
+    maxAge: 60 * 60, // 1 hour session
   },
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: "Phone Number", type: "text" }, // Email is used here as phone number
+        password: { label: "OTP", type: "password" }, // OTP is used as password
       },
       async authorize(credentials) {
         try {
-          // Call your authentication API
-          const response = await fetch('https://vcall.aairavx.com/api/auth/login', { // Use your API URL here
-            method: 'POST',
+          const response = await fetch("https://vcall.aairavx.com/api/auth/login", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
-              Authorization: 'Basic ' + Buffer.from(`${credentials?.email}:${credentials?.password}`).toString('base64'),
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              email: credentials?.email,
-              password: credentials?.password,
-            }), // Send the credentials in the body as expected by your API
+              phone: credentials?.email, // Here, email is the phone number
+              password: credentials?.password, // Password is the OTP
+            }),
           });
 
-          const user = await response.json();
+          const data = await response.json();
 
-          if (response.ok && user) {
-            const { data } = user || {};
+          // Check if response is ok and contains user info
+          if (response.ok && data) {
             return {
-              id: data?._id,
-              email: data?.email,
-              name: data?.name,
-              accessToken: data?.access_token,
+              id: data.user.id,
+              name: data.user.name,
+              phone: data.user.phone, // or email, depending on the data you return from backend
+              accessToken: data.accessToken,
             };
           }
-          return null; // Return null if authentication fails
+
+          return null; // If the login fails, return null
         } catch (error) {
-          console.log('Error during authentication:', error);
-          return null; // Return null if the API call fails
+          console.error("Error during authentication:", error);
+          return null; // Return null in case of failure
         }
       },
     }),
   ],
-  pages: {
-    signIn: '/login', // Custom sign-in page
-  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.accessToken = user.accessToken;
+        token.accessToken = user.accessToken; // Store the access token
       }
-      return token; // Return token containing user info
+      return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id;
-        session.user.accessToken = token.accessToken;
+        session.user.accessToken = token.accessToken; // Add the access token to the session
       }
-      return session; // Return session with user info
+      return session;
     },
+  },
+  pages: {
+    signIn: "/login", // Custom sign-in page
   },
 });
 

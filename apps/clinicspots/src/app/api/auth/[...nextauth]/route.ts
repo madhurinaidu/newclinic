@@ -1,70 +1,137 @@
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import { API } from '@app/config';
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      accessToken?: string;
+    };
+  }
+
+  interface User {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    accessToken?: string;
+  }
+
+  interface JWT {
+    accessToken?: string;
+  }
+}
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "jwt",
-    maxAge: 60 * 60, // 1 hour session
+    strategy: 'jwt',
+    maxAge: 60 * 60, // 60 seconds = 1 minute
+  },
+  cookies: {
+    sessionToken: {
+      name: `clinicspots.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+      },
+    },
+    callbackUrl: {
+      name: `clinicspots.callback-url`,
+      options: {
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+      },
+    },
+    csrfToken: {
+      name: `clinicspots.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+      },
+    },
+  },
+  jwt: {
+    maxAge: 60 * 60,
   },
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Phone Number", type: "text" }, // Email is used here as phone number
-        password: { label: "OTP", type: "password" }, // OTP is used as password
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         try {
-          const response = await fetch("https://vcall.aairavx.com/api/auth/login", {
-            method: "POST",
+          // Make API call to your authentication endpoint
+          const response = await fetch(`${API.login}`, {
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
+              Authorization:
+                'Basic ' +
+                Buffer.from(
+                  credentials?.email + ':' + credentials?.password
+                ).toString('base64'),
             },
-            body: JSON.stringify({
-              phone: credentials?.email, // Here, email is the phone number
-              password: credentials?.password, // Password is the OTP
-            }),
+            // body: JSON.stringify({
+            //   username: credentials?.email,
+            //   password: credentials?.password,
+            // }),
           });
 
-          const data = await response.json();
+          const user = await response.json();
 
-          // Check if response is ok and contains user info
-          if (response.ok && data) {
+          if (response.ok && user) {
+            const { data } = user || {};
             return {
-              id: data.user.id,
-              name: data.user.name,
-              phone: data.user.phone, // or email, depending on the data you return from backend
-              accessToken: data.accessToken,
+              id: data?._id,
+              email: data?.email,
+              name: data?.name,
+              accessToken: data?.access_token,
             };
           }
-
-          return null; // If the login fails, return null
+          return null;
         } catch (error) {
-          console.error("Error during authentication:", error);
-          return null; // Return null in case of failure
+          console.log(error);
+          return null;
         }
       },
     }),
   ],
+  pages: {
+    signIn: '/login',
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.accessToken = user.accessToken; // Store the access token
+        token.accessToken = user.accessToken;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({
+      session,
+      token,
+    }: {
+      session: any;
+      token: any & { id: string; accessToken?: string };
+    }) {
       if (session.user) {
         session.user.id = token.id;
-        session.user.accessToken = token.accessToken; // Add the access token to the session
+        session.user.accessToken = token.accessToken;
       }
       return session;
     },
-  },
-  pages: {
-    signIn: "/login", // Custom sign-in page
   },
 });
 

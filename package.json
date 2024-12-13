@@ -5,7 +5,7 @@
   "scripts": {
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "dev:grow": "nx dev grow",
-    "dev:clinicspots": "nx dev clinicspots -p 4000 -H 0.0.0.0""
+    "dev:clinicspots": "nx dev clinicspots -p 4000 -H 0.0.0.0"
   },
   "private": true,
   "dependencies": {

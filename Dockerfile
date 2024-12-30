@@ -1,21 +1,27 @@
-# Use an official Node.js runtime as a parent image
+# Use the official Node.js image from the Docker Hub
 FROM node:18-alpine
 
-# Set the working directory in the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json to install dependencies
+# Install global dependencies (like Nx CLI and PM2)
+RUN npm install -g nx pm2
+
+# Copy package.json and package-lock.json (or yarn.lock)
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install all dependencies for the entire workspace
+RUN npm install --legacy-peer-deps
 
-# Copy the rest of the application code
+# Copy the rest of the Nx workspace code to the container
 COPY . .
 
-# Expose the port that your app will run on (in this case, port 4000)
-EXPOSE 4000
+# Build the `grow` and `clinicspots` applications
+RUN nx build grow --prod
+RUN nx build clinicspots --prod
 
-# Command to run the app in development mode
-CMD ["npm", "run", "dev:clinicspots"]
+# Expose the ports for both apps
+EXPOSE 4200 4000
 
+# Start both `grow` and `clinicspots` apps using pm2
+CMD ["pm2", "start", "nx", "--", "serve", "grow", "&", "pm2", "start", "nx", "--", "serve", "clinicspots", "-p", "4000", "-H", "0.0.0.0"]

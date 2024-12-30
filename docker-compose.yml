@@ -1,0 +1,11 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Path to the Dockerfile you created
+    ports:
+      - "4200:4200"  # Expose the frontend app (grow) at port 4200
+      - "4000:4000"  # Expose the backend app (clinicspots) at port 4000
+    environment:
+      - NODE_ENV=production
